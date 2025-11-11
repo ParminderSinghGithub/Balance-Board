@@ -29,3 +29,6 @@ dist/
 
 # Tests
 coverage/
+TESTING_REPORT.md
+BACKEND_TEST_REPORT.md
+test-*.json
