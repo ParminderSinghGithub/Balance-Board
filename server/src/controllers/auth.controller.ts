@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
                 email: user.email,
             },
             secret,
-            { expiresIn: '1h' }
+            { expiresIn: '7d' }
         );
 
         return res.status(200).json({ token, userId: user.id });

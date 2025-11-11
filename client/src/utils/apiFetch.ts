@@ -7,7 +7,8 @@ export async function apiFetch(
 ) {
   const response = await fetch(url, options);
 
-  if (response.status === 401 || response.status === 403 || response.status === 500) {
+  // Only logout on authentication errors (401 Unauthorized)
+  if (response.status === 401) {
     if (authContext && authContext.logout) {
       authContext.logout();
     }
