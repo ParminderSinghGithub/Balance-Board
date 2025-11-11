@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+*.node_modules
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Build
+build/
+dist/
+.next/
+
+# Docker
+.docker/
+
+# Tests
+coverage/

@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  warehouse:
+    container_name: warehouse
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tracker}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - finance-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # Database Migrations
+  db_migrations:
+    container_name: db_migrations
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    depends_on:
+      warehouse:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_HOST: warehouse
+      POSTGRES_DB: ${POSTGRES_DB:-tracker}
+    networks:
+      - finance-network
+    command: ["npm", "run", "migrate:up"]
+
+  # Backend Server
+  backend:
+    container_name: backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: warehouse
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-tracker}
+      PORT: ${PORT:-8000}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_in_production}
+      NODE_ENV: ${NODE_ENV:-development}
+    ports:
+      - "8000:8000"
+    depends_on:
+      warehouse:
+        condition: service_healthy
+      db_migrations:
+        condition: service_completed_successfully
+    networks:
+      - finance-network
+    volumes:
+      - ./server/src:/app/src
+    command: npm run dev
+
+  # Frontend Server
+  frontend:
+    container_name: frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    environment:
+      BASE_URL: ${BASE_URL:-http://localhost:8000}
+      REACT_APP_API_URL: ${BASE_URL:-http://localhost:8000}
+      REACT_APP_ENVIRONMENT: ${NODE_ENV:-development}
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    networks:
+      - finance-network
+    volumes:
+      - ./client/src:/app/src
+
+networks:
+  finance-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
