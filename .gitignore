@@ -39,4 +39,7 @@ FRONTEND_TEST_PLAN.md
 
 # Documentation (excluding critical docs)
 *.md
+!README.md
 !LICENSE.md
+
+demo.gif
