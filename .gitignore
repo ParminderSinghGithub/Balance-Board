@@ -32,3 +32,11 @@ coverage/
 TESTING_REPORT.md
 BACKEND_TEST_REPORT.md
 test-*.json
+TEST_RESULTS.md
+FRONTEND_TEST_CHECKLIST.md
+FRONTEND_TECHNICAL_VERIFICATION.md
+FRONTEND_TEST_PLAN.md
+
+# Documentation (excluding critical docs)
+*.md
+!LICENSE.md
