@@ -12,7 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
   const isSelected = (path: string) => location.pathname === path;
 
-  const selectedColor = (path: string) => isSelected(path) ? theme.palette.grey[100] : alpha(theme.palette.grey[100], 0.5);
+  const selectedColor = (path: string) => isSelected(path) ? theme.palette.primary.main : theme.palette.grey[100];
 
   return (
     <Drawer

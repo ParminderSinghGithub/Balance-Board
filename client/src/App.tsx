@@ -7,6 +7,7 @@ import CashFlow from "./pages/cashflow";
 import Navbar from "./pages/navbar";
 import Sidebar from "./pages/sidebar";
 import LoginPage from "./pages/login";
+import ForgotPasswordPage from "./pages/forgot-password";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 
 const AppRoutes: React.FC = () => {
@@ -17,6 +18,7 @@ const AppRoutes: React.FC = () => {
             {!authContext?.isLoggedIn ? (
                 <>
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                     <Route path="*" element={<Navigate to="/login" />} />
                 </>
             ) : (

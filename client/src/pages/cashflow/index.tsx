@@ -5,34 +5,17 @@ import ExpenseFormModal from "../../components/ExpenseFormModal";
 import { useState } from "react";
 
 const gridTemplateLargeScreens = `
-    "a b c"
-    "d e f"
+    "a a a"
+    "b c d"
+    "e e f"
 `;
 
 const gridTemplateSmallScreens = `
     "a"
-    "a"
-    "a"
-    "a"
-    "b"
-    "b"
-    "b"
     "b"
     "c"
-    "c"
-    "c"
-    "c"
-    "d"
-    "d"
-    "d"
     "d"
     "e"
-    "e"
-    "e"
-    "e"
-    "f"
-    "f"
-    "f"
     "f"
 `;
 
@@ -50,16 +33,17 @@ const CashFlow = () => {
             height="100%"
             display="grid"
             gap="1.5rem"
+            p="1.5rem"
             sx={
                 isAboveMediumScreens
                     ? {
-                          gridTemplateColumns: "repeat(3, minmax(370px, 1fr))",
-                          gridTemplateRows: " repeat(2, minmax(60px, 1fr))",
+                          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                          gridTemplateRows: "repeat(3, minmax(350px, auto))",
                           gridTemplateAreas: gridTemplateLargeScreens,
                       }
                     : {
-                          gridAutoColumns: "1fr",
-                          gridAutoRows: "80px",
+                          gridTemplateColumns: "1fr",
+                          gridAutoRows: "minmax(350px, auto)",
                           gridTemplateAreas: gridTemplateSmallScreens,
                       }
             }

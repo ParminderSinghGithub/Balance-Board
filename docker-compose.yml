@@ -54,6 +54,9 @@ services:
       PORT: ${PORT:-8000}
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_change_in_production}
       NODE_ENV: ${NODE_ENV:-development}
+      EMAIL_USER: ${EMAIL_USER:-}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3001}
     ports:
       - "8000:8000"
     depends_on:

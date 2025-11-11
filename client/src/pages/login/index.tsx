@@ -21,6 +21,7 @@ const LoginPage: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -37,6 +38,7 @@ const LoginPage: React.FC = () => {
         setIsLogin((prevMode) => !prevMode);
         setError('');
         setSuccess('');
+        setName('');
     };
 
     const submitHandler = async (event: React.FormEvent) => {
@@ -60,7 +62,7 @@ const LoginPage: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, ...(isLogin ? {} : { name }) }),
             });
 
             const data = await response.json();
@@ -199,6 +201,26 @@ const LoginPage: React.FC = () => {
 
                         {/* Form */}
                         <form onSubmit={submitHandler}>
+                            {!isLogin && (
+                                <TextField
+                                    type="text"
+                                    label="Full Name"
+                                    variant="outlined"
+                                    fullWidth
+                                    margin="normal"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required={!isLogin}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 2,
+                                            '&:hover fieldset': {
+                                                borderColor: theme.palette.primary.main,
+                                            },
+                                        },
+                                    }}
+                                />
+                            )}
                             <TextField
                                 type="email"
                                 label="Email Address"
@@ -259,6 +281,27 @@ const LoginPage: React.FC = () => {
                                     },
                                 }}
                             />
+
+                            {isLogin && (
+                                <Box sx={{ textAlign: 'right', mt: 1 }}>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        onClick={() => window.location.href = '/forgot-password'}
+                                        sx={{
+                                            fontSize: '0.875rem',
+                                            color: theme.palette.primary.main,
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                backgroundColor: 'transparent',
+                                                textDecoration: 'underline',
+                                            },
+                                        }}
+                                    >
+                                        Forgot Password?
+                                    </Button>
+                                </Box>
+                            )}
 
                             <Button
                                 type="submit"

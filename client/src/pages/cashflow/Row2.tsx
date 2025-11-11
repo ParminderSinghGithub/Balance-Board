@@ -136,11 +136,9 @@ const Row2: React.FC = () => {
         return Object.keys(chartData[0]).filter(key => key !== 'time');
     }, [chartData]);
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading data.</div>;
-    if (!chartData.length) return <div>No data available.</div>;
-    if (!stuckData.length) return <div>No data available.</div>;
-    if (!listData.length) return <div>No data available.</div>;
+    if (isLoading) return null;
+    if (error) return null;
+    if (!chartData.length || !stuckData.length || !listData.length) return null;
 
     const latestStuckDataMonth = stuckData.length > 0 ? stuckData[stuckData.length - 1].month : '';
     const latestChartDataTime = chartData.length > 0 ? chartData[chartData.length - 1].time : '';
@@ -149,87 +147,97 @@ const Row2: React.FC = () => {
         <>
             <DashboardBox sx={{ 
                 gridArea: 'd', 
-                display: 'grid',
-                gap: '1rem',
-                padding: '1rem',
-                height: { xs: 250, md: 400 },
-                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                padding: '1.5rem',
+                overflow: 'hidden',
             }}>
                 <BoxHeader title="Expense Types" subtitle="Monthly values of expense types" sideText={`Updated: ${latestStuckDataMonth}`} />
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                      data={stuckData}
-                      margin={{
-                          top: 20, right: 30, left: 20, bottom: 5,
-                      }}
-                      barGap={-10}
-                      barCategoryGap={0}
-                  >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month"/>
-                      <YAxis>
-                          <Label value="DKK" angle={-90} position="insideLeft" />
-                      </YAxis>
-                      <Tooltip />
-                      <Legend wrapperStyle={{ paddingTop: "10px" }} /> 
-                      {Object.keys(stuckData[0] || {}).filter(key => key !== 'month').map((key, idx) => (
-                          <Bar 
-                              key={idx} 
-                              dataKey={key} 
-                              stackId="a" 
-                              fill={barColors[idx % barColors.length]} 
-                              barSize={30}
-                          />
-                      ))}
-                  </BarChart>
-                </ResponsiveContainer>
+                <Box sx={{ flex: 1, minHeight: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                          data={stuckData}
+                          margin={{
+                              top: 10, right: 10, left: 0, bottom: 5,
+                          }}
+                          barGap={-10}
+                          barCategoryGap={0}
+                      >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="month" fontSize={12}/>
+                          <YAxis fontSize={12}>
+                              <Label value="INR" angle={-90} position="insideLeft" style={{ fontSize: 12 }} />
+                          </YAxis>
+                          <Tooltip />
+                          <Legend wrapperStyle={{ paddingTop: "5px", fontSize: '12px' }} /> 
+                          {Object.keys(stuckData[0] || {}).filter(key => key !== 'month').map((key, idx) => (
+                              <Bar 
+                                  key={idx} 
+                                  dataKey={key} 
+                                  stackId="a" 
+                                  fill={barColors[idx % barColors.length]} 
+                                  barSize={30}
+                              />
+                          ))}
+                      </BarChart>
+                    </ResponsiveContainer>
+                </Box>
             </DashboardBox>
 
             <DashboardBox sx={{
                 gridArea: 'e',
-                display: 'grid',
-                gap: '1rem',
-                padding: '1rem',
-                height: { xs: 250, md: 400 },
-                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                padding: '1.5rem',
+                overflow: 'hidden',
             }}>
                 <BoxHeader title="Expense Categories" subtitle="Monthly values of expense categories" sideText={`Updated: ${latestChartDataTime}`} />
-                <ResponsiveContainer width="100%" height={300}>
-                    <LineChart
-                        className="timeSeriesChart"
-                        data={chartData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        onClick={(e) => e?.activePayload?.[0] && handleLegendClick(e.activePayload[0])}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="time" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend onClick={handleLegendClick} wrapperStyle={{ cursor: 'pointer' }} />
-                        {categoryKeys.map((key, index) => (
-                            <Line
-                                key={key}
-                                type="monotone"
-                                dataKey={key}
-                                stroke={generateColor(index)}
-                                hide={isolatedCategory !== null && isolatedCategory !== key}
-                                strokeWidth={isolatedCategory === key ? 2.5 : 1}
-                                connectNulls
-                            />
-                        ))}
-                    </LineChart>
-                </ResponsiveContainer>
+                <Box sx={{ flex: 1, minHeight: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                            className="timeSeriesChart"
+                            data={chartData}
+                            margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+                            onClick={(e) => e?.activePayload?.[0] && handleLegendClick(e.activePayload[0])}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="time" fontSize={12} />
+                            <YAxis fontSize={12} />
+                            <Tooltip />
+                            <Legend onClick={handleLegendClick} wrapperStyle={{ cursor: 'pointer', fontSize: '12px', paddingTop: '5px' }} />
+                            {categoryKeys.map((key, index) => (
+                                <Line
+                                    key={key}
+                                    type="monotone"
+                                    dataKey={key}
+                                    stroke={generateColor(index)}
+                                    hide={isolatedCategory !== null && isolatedCategory !== key}
+                                    strokeWidth={isolatedCategory === key ? 2.5 : 1}
+                                    connectNulls
+                                />
+                            ))}
+                        </LineChart>
+                    </ResponsiveContainer>
+                </Box>
             </DashboardBox>
 
-            <DashboardBox gridArea="f">
+            <DashboardBox sx={{ 
+                gridArea: 'f',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '1.5rem',
+                overflow: 'hidden',
+            }}>
                 <BoxHeader
-                    title="List of Transcactions"
+                    title="List of Transactions"
                     sideText={`${listData?.length} Transactions`}
                 />
                 <Box
-                    mt="1rem"
-                    p="0 0.5rem"
-                    height="80%"
+                    mt="0.5rem"
+                    flex="1"
+                    minHeight={0}
                     sx={{
                         "& .MuiDataGrid-root": {
                             color: palette.grey[300],

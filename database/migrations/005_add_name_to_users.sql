@@ -1,0 +1,15 @@
+-- Up Migration
+BEGIN;
+
+ALTER TABLE users
+ADD COLUMN name VARCHAR(255);
+
+COMMIT;
+
+-- Down Migration
+BEGIN;
+
+ALTER TABLE users
+DROP COLUMN IF EXISTS name;
+
+COMMIT;
