@@ -8,8 +8,9 @@ import {
 } from 'recharts';
 import { AuthContext } from '../../context/AuthContext';
 import { apiFetch } from '../../utils/apiFetch';
+import { getApiBaseUrl } from '../../utils/apiBaseUrl';
 
-const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const baseUrl = getApiBaseUrl();
 
 interface FinancialData {
     report_year: string;

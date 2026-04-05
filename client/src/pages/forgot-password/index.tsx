@@ -17,6 +17,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Email, Lock, TrendingUp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { getApiBaseUrl } from '../../utils/apiBaseUrl';
 
 const ForgotPasswordPage: React.FC = () => {
     const theme = useTheme();
@@ -45,7 +46,7 @@ const ForgotPasswordPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/auth/request-password-reset', {
+            const response = await fetch(`${getApiBaseUrl()}/auth/request-password-reset`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
@@ -91,7 +92,7 @@ const ForgotPasswordPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/auth/reset-password', {
+            const response = await fetch(`${getApiBaseUrl()}/auth/reset-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp, newPassword }),

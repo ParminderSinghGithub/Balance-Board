@@ -3,6 +3,7 @@ import { Box, IconButton, Typography, useTheme, Button, Avatar, Tooltip, Menu, M
 import MenuIcon from '@mui/icons-material/Menu';
 import { LogoutOutlined, TrendingUp } from '@mui/icons-material';
 import { AuthContext } from '../../context/AuthContext';
+import { getApiBaseUrl } from '../../utils/apiBaseUrl';
 
 type NavbarProps = {
   onToggleSidebar: () => void;
@@ -35,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
   const handleDeleteConfirm = async () => {
     setIsDeleting(true);
     try {
-      const response = await fetch('http://localhost:8000/auth/delete-account', {
+      const response = await fetch(`${getApiBaseUrl()}/auth/delete-account`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${authContext?.token}`,

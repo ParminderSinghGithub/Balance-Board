@@ -20,6 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { AuthContext } from '../context/AuthContext';
 import { apiFetch } from '../utils/apiFetch';
+import { getApiBaseUrl } from '../utils/apiBaseUrl';
 
 interface Category {
   type_name: string;
@@ -32,7 +33,7 @@ interface ExpenseFormModalProps {
 }
 
 const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ onExpenseAdded }) => {
-  const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  const baseUrl = getApiBaseUrl();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState('');

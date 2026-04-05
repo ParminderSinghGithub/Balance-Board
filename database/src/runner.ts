@@ -21,12 +21,18 @@ function findSqlFiles(dir: string, fileList: string[] = []): string[] {
 
 export async function migrationRunner(direction: 'up' | 'down'): Promise<void> {
   process.chdir(__dirname);
+  const connectionString = process.env.DATABASE_URL;
+  const dbHost = process.env.POSTGRES_HOST || process.env.PGHOST;
+  const shouldUseSsl = Boolean(connectionString || (dbHost && dbHost.includes('railway')) || process.env.NODE_ENV === 'production');
+
   const client = new pg.Client({
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    port: 5432,
+    connectionString,
+    user: process.env.POSTGRES_USER || process.env.PGUSER,
+    password: process.env.POSTGRES_PASSWORD || process.env.PGPASSWORD,
+    host: dbHost,
+    database: process.env.POSTGRES_DB || process.env.PGDATABASE,
+    port: Number(process.env.POSTGRES_PORT || process.env.PGPORT || 5432),
+    ssl: shouldUseSsl ? { rejectUnauthorized: false } : undefined,
  
   });
 

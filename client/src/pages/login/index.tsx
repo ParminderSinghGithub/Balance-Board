@@ -15,6 +15,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { Visibility, VisibilityOff, Email, Lock, TrendingUp } from '@mui/icons-material';
 import { AuthContext } from '../../context/AuthContext';
+import { getApiBaseUrl } from '../../utils/apiBaseUrl';
 
 const LoginPage: React.FC = () => {
     const theme = useTheme();
@@ -54,7 +55,7 @@ const LoginPage: React.FC = () => {
         }
 
         const endpoint = isLogin ? 'login' : 'signup';
-        const url = `http://localhost:8000/auth/${endpoint}`;
+        const url = `${getApiBaseUrl()}/auth/${endpoint}`;
 
         try {
             const response = await fetch(url, {
@@ -80,7 +81,7 @@ const LoginPage: React.FC = () => {
                 // Immediately login the user after signup
                 setTimeout(async () => {
                     try {
-                        const loginResponse = await fetch('http://localhost:8000/auth/login', {
+                        const loginResponse = await fetch(`${getApiBaseUrl()}/auth/login`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

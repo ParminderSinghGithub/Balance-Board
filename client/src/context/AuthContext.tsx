@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiBaseUrl } from '../utils/apiBaseUrl';
 
 interface AuthContextType {
     token: string | null;
@@ -40,7 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const fetchUserProfile = async (authToken: string) => {
         try {
-            const response = await fetch('http://localhost:8000/auth/profile', {
+            const response = await fetch(`${getApiBaseUrl()}/auth/profile`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                 },
