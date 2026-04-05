@@ -6,10 +6,8 @@
 
 **A modern, full-stack personal finance management platform with advanced analytics and email notifications**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://frontend-production-80c5.up.railway.app)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
-
-[🚀 Live Demo](https://frontend-production-80c5.up.railway.app) • [📹 Video Demo](#demo) • [📖 Documentation](#documentation)
+[![Live Link](https://img.shields.io/badge/Live%20Demo-Visit%20Now-success?style=for-the-badge)](https://frontend-production-80c5.up.railway.app)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -19,7 +17,7 @@
 
 > **See Balance Board in action**
 
-![Balance Board Demo](demo.gif)
+![Balance Board Demo](https://github.com/user-attachments/assets/a809e885-28b0-4b69-95b3-5d7a0d763905)
 
 ---
 
@@ -539,15 +537,6 @@ Contributions are welcome! Please follow these steps:
 ## 📝 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Inspiration**: [ed-roh/finance-app](https://github.com/ed-roh/finance-app)
-- **Tutorial**: [Build a Finance Dashboard](https://www.youtube.com/watch?v=uoJ0Tv-BFcQ)
-- **UI Design**: Material-UI team for excellent components
-- **Deployment**: Railway.app for seamless hosting
 
 ---
 
