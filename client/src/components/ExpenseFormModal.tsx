@@ -45,12 +45,18 @@ const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ onExpenseAdded }) =
 
   useEffect(() => {
     fetch(`${baseUrl}/feed/expense-categories`)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
-        console.log('this is my data', data);
         setCategories(data);
       })
-      .catch(error => console.error('Error fetching categories:', error));
+      .catch(error => {
+        console.error('Error fetching categories:', error);
+      });
   }, [baseUrl]);
 
   const handleOpen = () => setOpen(true);
@@ -68,21 +74,19 @@ const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ onExpenseAdded }) =
     setSelectedCategoryId(category ? category.category_id : null);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     if (selectedTypeId === null || selectedCategoryId === null) {
-      console.error('Type or category not selected');
+      alert('Please select both type and category');
       return;
     }
 
     setIsSubmitting(true);
 
     const transactionData = {
-      date: new Date().toISOString().slice(0, 10),
+      date: new Date().toISOString().split('T')[0],
       amount: parseFloat(amount),
       typeId: selectedTypeId,
-      categoryId: selectedCategoryId
+      categoryId: selectedCategoryId,
     };
 
     try {
@@ -95,8 +99,12 @@ const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ onExpenseAdded }) =
         body: JSON.stringify(transactionData),
       }, authContext);
       
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create transaction');
+      }
+      
       const data = await response.json();
-      console.log(data);
       
       if (onExpenseAdded) {
         onExpenseAdded();
@@ -105,6 +113,7 @@ const ExpenseFormModal: React.FC<ExpenseFormModalProps> = ({ onExpenseAdded }) =
       handleClose();
     } catch (error) {
       console.error('Error submitting transaction:', error);
+      alert(error instanceof Error ? error.message : 'Failed to create transaction');
     } finally {
       setIsSubmitting(false);
     }

@@ -20,7 +20,6 @@ export const getTimeSeries = (userId: string) => {
       FROM transactions t
       JOIN expense_types et on et.id = t.type_id 
       WHERE et.type_name not in ('Salary' ,'Bonus', 'Rent')
-      AND TO_CHAR(t.date, 'YYYY') > '2024'
       AND t.user_id = $1
       GROUP BY 2,3`,
       [userId]
@@ -37,14 +36,12 @@ export const getCasflow = (userId: string) => {
     return query(
       `SELECT 
         ec.category_name,
-        et.type_name,
-        TO_CHAR(t.date, 'Month') as month, 
-        SUM(t.amount) as total_amount
+        TO_CHAR(t.date, 'YYYY-MM') as month,
+        SUM(t.amount) as total
       FROM transactions t
       JOIN expense_types et ON et.id = t.type_id
       JOIN expense_categories ec ON ec.id=t.category_id
-      WHERE TO_CHAR(t.date, 'YYYY') > '2024'
-      AND t.user_id = $1
+      WHERE t.user_id = $1
       GROUP BY 1, 2, 3
       ORDER BY ec.category_name, month`,
       [userId]
@@ -65,7 +62,6 @@ export const getFinancialDetails = (userId: string) => {
       FROM transactions t 
       JOIN expense_categories ec ON ec.id = t.category_id 
       WHERE ec.category_name != 'Income'
-      AND TO_CHAR(t.date, 'YYYY') > '2024'
       AND t.user_id = $1
       GROUP BY 1,2
       ORDER BY SUM(t.amount) DESC`,
@@ -84,7 +80,6 @@ export const getExpenseTable = (userId: string) => {
       INNER JOIN expense_categories ec ON ec.id = t.category_id 
       INNER JOIN expense_types et on et.id = t.type_id 
       WHERE ec.category_name != 'Income'
-      AND TO_CHAR(t.date, 'YYYY') > '2024'
       AND t.user_id = $1
       ORDER BY TO_CHAR(t.date, 'YYYY-MM-DD') desc`,
       [userId]

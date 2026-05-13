@@ -93,7 +93,7 @@ export const sendWelcomeEmail = async (to: string, userName?: string) => {
         console.log('Welcome email sent to:', to);
     } catch (error) {
         console.error('Error sending welcome email:', error);
-        throw error;
+        throw new Error('Failed to send welcome email. Please check email configuration.');
     }
 };
 
@@ -159,7 +159,7 @@ export const sendPasswordResetOTP = async (to: string, otp: string) => {
         console.log('OTP email sent to:', to);
     } catch (error) {
         console.error('Error sending OTP email:', error);
-        throw error;
+        throw new Error('Failed to send OTP email. Please check email configuration.');
     }
 };
 
@@ -234,6 +234,6 @@ export const sendAccountDeletionEmail = async (to: string, userName?: string) =>
         console.log('Account deletion email sent to:', to);
     } catch (error) {
         console.error('Error sending account deletion email:', error);
-        throw error;
+        throw new Error('Failed to send account deletion email. Please check email configuration.');
     }
 };

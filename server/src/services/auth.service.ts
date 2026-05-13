@@ -26,7 +26,7 @@ export const deleteUser = async (id: string) => {
     return result.rows[0];
 };
 
-export const createPasswordResetOTP = async (userId: number, otp: string) => {
+export const createPasswordResetOTP = async (userId: string | number, otp: string) => {
     // Delete any existing OTPs for this user
     await query('DELETE FROM password_resets WHERE user_id = $1', [userId]);
     
@@ -39,7 +39,7 @@ export const createPasswordResetOTP = async (userId: number, otp: string) => {
     return result.rows[0];
 };
 
-export const verifyPasswordResetOTP = async (userId: number, otp: string): Promise<boolean> => {
+export const verifyPasswordResetOTP = async (userId: string | number, otp: string): Promise<boolean> => {
     const result = await query(
         'SELECT * FROM password_resets WHERE user_id = $1 AND otp = $2 AND expires_at > NOW()',
         [userId, otp]
@@ -47,11 +47,11 @@ export const verifyPasswordResetOTP = async (userId: number, otp: string): Promi
     return result.rows.length > 0;
 };
 
-export const deletePasswordResetOTP = async (userId: number) => {
+export const deletePasswordResetOTP = async (userId: string | number) => {
     await query('DELETE FROM password_resets WHERE user_id = $1', [userId]);
 };
 
-export const updatePassword = async (userId: number, hashedPassword: string) => {
+export const updatePassword = async (userId: string | number, hashedPassword: string) => {
     const result = await query(
         'UPDATE users SET password_hash = $1 WHERE id = $2 RETURNING id',
         [hashedPassword, userId]

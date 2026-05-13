@@ -14,14 +14,23 @@ const port = process.env.PORT || 8000;
 
 const app: Express = express();
 
+// CORS configuration
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3001',
+  'https://frontend-production-80c5.up.railway.app'
+];
+
 app.use(cors({
-    origin: "*", // Allow all origins
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 
-// app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 
 app.use('/auth', authRoutes);
