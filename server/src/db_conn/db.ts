@@ -1,48 +1,19 @@
 import { Pool, QueryResult } from 'pg';
 
 const connectionString = process.env.DATABASE_URL;
-const dbHost = process.env.POSTGRES_HOST || process.env.PGHOST;
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not defined');
+}
 
 console.log('DB INIT DATABASE_URL:', !!connectionString);
-console.log('DB INIT HOST:', dbHost);
 
-const shouldUseSsl =
-  Boolean(
-    connectionString ||
-    (dbHost && dbHost.includes('railway')) ||
-    process.env.NODE_ENV === 'production'
-  );
-
-const poolConfig = connectionString
-  ? {
-      connectionString,
-      ssl: shouldUseSsl
-        ? { rejectUnauthorized: false }
-        : undefined,
-    }
-  : {
-      user: process.env.POSTGRES_USER || process.env.PGUSER,
-      host: dbHost,
-      database:
-        process.env.POSTGRES_DB ||
-        process.env.PGDATABASE ||
-        'tracker',
-      password:
-        process.env.POSTGRES_PASSWORD ||
-        process.env.PGPASSWORD,
-      port: Number(
-        process.env.POSTGRES_PORT ||
-        process.env.PGPORT ||
-        5432
-      ),
-      ssl: shouldUseSsl
-        ? { rejectUnauthorized: false }
-        : undefined,
-    };
-
-console.log('DB SSL ENABLED:', shouldUseSsl);
-
-const pool = new Pool(poolConfig);
+const pool = new Pool({
+  connectionString,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 pool
   .connect()
