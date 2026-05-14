@@ -2,13 +2,25 @@ import nodemailer from 'nodemailer';
 
 // Create transporter
 const createTransporter = () => {
-    return nodemailer.createTransport({
-        service: 'gmail',
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // Use STARTTLS instead of implicit SSL (port 465)
         auth: {
-            user: process.env.EMAIL_USER, // Your Gmail address
-            pass: process.env.EMAIL_PASSWORD, // Your Gmail App Password
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
         },
     });
+
+    // Debug logging (no passwords)
+    console.log('SMTP CONFIG:', {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        user: process.env.EMAIL_USER,
+    });
+
+    return transporter;
 };
 
 // Send Welcome Email
