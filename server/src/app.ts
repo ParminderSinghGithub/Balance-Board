@@ -1,14 +1,21 @@
+import path from 'path';
+import dotenv from 'dotenv';
+
+// Load env BEFORE any other imports
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env'),
+});
+
+console.log('DATABASE_URL loaded:', !!process.env.DATABASE_URL);
+console.log('POSTGRES_HOST loaded:', process.env.POSTGRES_HOST);
+
 import express, { Express, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { z } from 'zod';
-import dotenv from 'dotenv';
 
 import feedRoutes from './routes/feed';
 import authRoutes from './routes/auth';
-
-// Load environment variables
-dotenv.config();
 
 const port = process.env.PORT || 8000;
 
@@ -31,28 +38,29 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(bodyParser.json()); // application/json
+app.use(bodyParser.json());
 
 app.use('/auth', authRoutes);
 app.use('/feed', feedRoutes);
 
 app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
-    console.error(error);
+  console.error(error);
 
-    if (error instanceof z.ZodError) {
-        res.status(422).json({ 
-            message: 'Validation failed.',
-            errors: error.errors 
-        });
-        return;
-    }
-    
-    const status = error.statusCode || 500;
-    const message = error.message || 'An internal server error occurred.';
-    res.status(status).json({ message: message });
-    return;
+  if (error instanceof z.ZodError) {
+    return res.status(422).json({
+      message: 'Validation failed.',
+      errors: error.errors
+    });
+  }
+
+  const status = error.statusCode || 500;
+  const message = error.message || 'An internal server error occurred.';
+
+  return res.status(status).json({
+    message
+  });
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
