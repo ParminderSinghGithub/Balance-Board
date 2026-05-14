@@ -412,48 +412,127 @@ Balance-Board/
 
 ## 🌐 Deployment
 
-### Railway Deployment (Recommended)
+### Railway + Neon Deployment Architecture (Current Production Setup)
 
-**Live Application**: [https://frontend-production-80c5.up.railway.app](https://frontend-production-80c5.up.railway.app)
+**Live Application**: https://frontend-production-80c5.up.railway.app
 
-#### Environment Variables (Railway Dashboard)
+### Current Production Infrastructure
 
-Add these to each service:
+| Component | Provider |
+|---|---|
+| Frontend | Railway |
+| Backend | Railway |
+| Database | Neon PostgreSQL |
+| Email Service | Gmail SMTP (local fully functional, cloud deployment limitations noted below) |
 
-**Backend Service:**
+### Deployment Evolution
+
+The project was initially deployed using:
+- Railway Frontend Service
+- Railway Backend Service
+- Railway PostgreSQL Service
+- Railway Migration Service
+
+During production debugging and deployment stabilization, Railway internal PostgreSQL networking became unstable on the shared/free infrastructure tier, producing persistent private-network connection refusal errors despite correct application-level configuration.
+
+The application was subsequently migrated to **Neon PostgreSQL**, which resolved:
+- database connection instability
+- Railway private networking issues
+- migration execution failures
+- backend connectivity failures
+
+This migration significantly improved deployment reliability while preserving the existing application architecture and database schema.
+
+---
+
+### Current Railway Environment Variables
+
+#### Backend Service
+
 ```env
-POSTGRES_HOST=<railway-provided>
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=<railway-generated>
-POSTGRES_DB=railway
+DATABASE_URL=<neon-postgresql-connection-string>
+
 JWT_SECRET=<your-secret>
+
 EMAIL_USER=<your-gmail>
-EMAIL_PASSWORD=<app-password>
+EMAIL_PASSWORD=<gmail-app-password>
+
 FRONTEND_URL=https://frontend-production-80c5.up.railway.app
+
 NODE_ENV=production
 PORT=8000
 ```
 
-**Frontend Service:**
+#### Frontend Service
+
 ```env
 REACT_APP_API_URL=https://backend-production-6d4c.up.railway.app
 ```
 
+#### Migration Service
+
+```env
+DATABASE_URL=<neon-postgresql-connection-string>
+```
+
+---
+
+### ⚠️ Email Delivery Notes
+
+The application email architecture and templates are fully implemented and function correctly in local development environments.
+
+Supported transactional email flows include:
+- welcome emails
+- OTP password reset emails
+- account deletion confirmation emails
+
+However, in the current Railway shared/free deployment environment, outbound SMTP connections to Gmail encounter infrastructure-level timeout restrictions (`ETIMEDOUT`) during SMTP socket connection establishment.
+
+This issue specifically affects:
+- deployed welcome emails
+- deployed OTP/password reset emails
+
+The following components are confirmed operational:
+- authentication system
+- password reset workflow logic
+- OTP generation/storage
+- email template rendering
+- backend API
+- database persistence
+- production deployment
+
+The limitation is isolated to:
+- outbound Gmail SMTP connectivity from Railway shared infrastructure
+
+Local Docker-based execution and development environments successfully send emails without issues.
+
+The architecture is fully compatible with production-grade transactional email providers such as:
+- Resend
+- SendGrid
+- Mailgun
+- Brevo
+
+Future production hardening can migrate the current Nodemailer/Gmail SMTP implementation to one of the above providers for fully reliable cloud-native email delivery.
+
+---
+
 ### Manual Deployment
 
 1. **Build Docker images:**
-   ```bash
-   docker-compose build
-   ```
+
+```bash
+docker-compose build
+```
 
 2. **Push to container registry:**
-   ```bash
-   docker tag balance-board-frontend your-registry/frontend
-   docker push your-registry/frontend
-   ```
+
+```bash
+docker tag balance-board-frontend your-registry/frontend
+docker push your-registry/frontend
+```
 
 3. **Deploy to your infrastructure** (AWS, Azure, GCP, etc.)
-
+   
 ---
 
 ## 🧪 Testing
